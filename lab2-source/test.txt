@@ -1,0 +1,160 @@
+CREATE TABLE `PayGrade` (
+  `pay_grade_id` uuid,
+  `grade_name` varchar(50),
+  PRIMARY KEY (`pay_grade_id`)
+);
+
+CREATE TABLE `Branch` (
+  `branch_id` uuid,
+  `branch_name` varchar(50),
+  `address` varchar(100),
+  PRIMARY KEY (`branch_id`)
+);
+
+CREATE TABLE `JobTitle` (
+  `job_title_id` uuid,
+  `name` varchar(50),
+  `leave_count` int,
+  PRIMARY KEY (`job_title_id`)
+);
+
+CREATE TABLE `Organization` (
+  `organization_id` uuid,
+  `name` varchar(50),
+  `address` varchar(100),
+  `registration_number ` varchar(50),
+  `latitude` decimal,
+  `longitude` decimal,
+  PRIMARY KEY (`organization_id`)
+);
+
+CREATE TABLE `Department` (
+  `department_id` uuid,
+  `name` varchar(50),
+  `organization_id` uuid,
+  PRIMARY KEY (`department_id`),
+  FOREIGN KEY (`organization_id`) REFERENCES `Organization`(`organization_id`)
+);
+
+CREATE TABLE `EmploymentStatus` (
+  `status_id ` uuid,
+  `status_name` varchar(50),
+  PRIMARY KEY (`status_id `)
+);
+
+CREATE TABLE `Employee` (
+  `employee_id` uuid,
+  `first_name` varchar(50),
+  `last_name` varchar(50),
+  `birth_date` date,
+  `marital_status` varchar(50),
+  `NIC_number` varchar(50),
+  `address` varchar(50),
+  `cur_leave_count` int,
+  `job_title_id` varchar(50),
+  `pay_grade_id` uuid,
+  `status_id` uuid,
+  `supervisor_id` uuid,
+  `department_id` uuid,
+  `profile_pic_id` uuid,
+  `branch_id` uuid,
+  PRIMARY KEY (`employee_id`),
+  FOREIGN KEY (`employee_id`) REFERENCES `Employee`(`supervisor_id`),
+  FOREIGN KEY (`pay_grade_id`) REFERENCES `PayGrade`(`pay_grade_id`),
+  FOREIGN KEY (`branch_id`) REFERENCES `Branch`(`branch_id`),
+  FOREIGN KEY (`job_title_id`) REFERENCES `JobTitle`(`job_title_id`),
+  FOREIGN KEY (`department_id`) REFERENCES `Department`(`department_id`),
+  FOREIGN KEY (`status_id`) REFERENCES `EmploymentStatus`(`status_id `)
+);
+
+CREATE TABLE `emergency_person` (
+  `person_id` uuid,
+  `name` varchar(50),
+  `relationship` varchar(50),
+  `address` varchar(100),
+  `employee_id` uuid,
+  `` <type>,
+  PRIMARY KEY (`person_id`),
+  FOREIGN KEY (`employee_id`) REFERENCES `Employee`(`employee_id`)
+);
+
+CREATE TABLE `emergency_person_contact` (
+  `phone_num` varchar(50),
+  `person_id` uuid,
+  PRIMARY KEY (`phone_num`),
+  FOREIGN KEY (`person_id`) REFERENCES `emergency_person`(`person_id`)
+);
+
+CREATE TABLE `employee_contact` (
+  `phone_num` varchar(50),
+  `employee_id` uuid,
+  PRIMARY KEY (`phone_num`),
+  FOREIGN KEY (`employee_id`) REFERENCES `Employee`(`employee_id`)
+);
+
+CREATE TABLE `LeaveAudit` (
+  `audit_id` uuid,
+  `audit_date` date,
+  `action` varchar(50),
+  `employee_id` uuid,
+  `leave_id ` uuid,
+  PRIMARY KEY (`audit_id`),
+  FOREIGN KEY (`employee_id`) REFERENCES `Employee`(`employee_id`)
+);
+
+CREATE TABLE `LeaveType` (
+  `leave_type_id` uuid,
+  `type_name` varchar(50),
+  `default_days` int,
+  PRIMARY KEY (`leave_type_id`)
+);
+
+CREATE TABLE `Leaves` (
+  `leave_id` uuid,
+  `start_date` date,
+  `end_date` date,
+  `status` enum,
+  `employee_id` uuid,
+  `leave_type_id` uuid,
+  PRIMARY KEY (`leave_id`),
+  FOREIGN KEY (`leave_type_id`) REFERENCES `LeaveType`(`leave_type_id`),
+  FOREIGN KEY (`employee_id`) REFERENCES `Employee`(`employee_id`)
+);
+
+CREATE TABLE `profile_pic` (
+  `profile_pic_id` uuid,
+  `location` varchar(100),
+  PRIMARY KEY (`profile_pic_id`)
+);
+
+CREATE TABLE `EmployeeDependents` (
+  `dependent_id` uuid,
+  `dependent_name` varchar(50),
+  `Relationship` varchar(50),
+  `Gender` varchar(50),
+  `IsCoveredByInsurance ` boolean,
+  `employee_id` uuid,
+  PRIMARY KEY (`dependent_id`),
+  FOREIGN KEY (`employee_id`) REFERENCES `Employee`(`employee_id`)
+);
+
+CREATE TABLE `custom_attribute` (
+  `employee_id` uuid,
+  `key_1` varchar(50),
+  `value` varchar(50),
+  `key_2` varchar(50),
+  `value` varchar(50),
+  `key_3` varchar(50),
+  `value` varchar(50),
+  PRIMARY KEY (`employee_id`)
+);
+
+CREATE TABLE `User` (
+  `user_id ` uuid,
+  `username` varchar(50),
+  `password_hash` varchar(255),
+  `role` enum,
+  `employee_id` uuid,
+  PRIMARY KEY (`user_id `)
+);
+
